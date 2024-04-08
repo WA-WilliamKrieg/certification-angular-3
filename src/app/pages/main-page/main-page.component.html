@@ -1,0 +1,12 @@
+<div class="container-fluid">
+
+    <app-zipcode-entry (addLocation)="addLocationCallback($event)"></app-zipcode-entry>
+    <app-current-conditions
+            (goTo)="goToLocationCallback($event)"
+            (removeLocation)="removeLocationCallback($event)">
+
+    </app-current-conditions>
+
+
+
+</div>

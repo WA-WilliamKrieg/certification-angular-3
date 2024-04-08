@@ -1,0 +1,39 @@
+ul{
+    margin: 0;
+    padding: 0;
+
+    li{
+        list-style: none;
+        display: inline-block;
+        margin-right: 10px;
+        cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: #f1f1f1;
+        color: #333;
+        transition: all 0.3s;
+        &.active{
+            background-color: #333;
+            color: #fff;
+        }
+
+        button{
+            background: none;
+            border: none;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+            outline: inherit;
+            padding: 0 5px;
+            border-radius: 5px;
+            margin-left: 5px;
+        }
+    }
+}
+
+.tab-content{
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin-top: 10px;
+}
