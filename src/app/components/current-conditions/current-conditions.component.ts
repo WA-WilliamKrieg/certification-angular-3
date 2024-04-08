@@ -1,6 +1,5 @@
-import {Component, EventEmitter, inject, Input, Output, Signal} from '@angular/core';
-import {WeatherService} from "../../services/weather.service";
-import {Router} from "@angular/router";
+import {Component, EventEmitter, inject, Output, Signal} from '@angular/core';
+import {WeatherService} from '../../services/weather.service';
 import {ConditionsExtended} from '../../types/conditions-and-zip.type';
 
 @Component({
@@ -8,10 +7,9 @@ import {ConditionsExtended} from '../../types/conditions-and-zip.type';
   templateUrl: './current-conditions.component.html',
   styleUrls: ['./current-conditions.component.css']
 })
-export class CurrentConditionsComponent {
+export class CurrentConditionsComponent{
 
   protected weatherService = inject(WeatherService);
-  private router = inject(Router);
   protected currentConditionsByZip: Signal<ConditionsExtended[]> = this.weatherService.getCurrentConditions();
 
   @Output() removeLocation = new EventEmitter<string>();
@@ -20,5 +18,6 @@ export class CurrentConditionsComponent {
   public removeLocationCallback(index: number) {
     this.removeLocation.emit(this.currentConditionsByZip()[index].zip)
   }
+
 
 }

@@ -4,4 +4,5 @@ export interface ConditionsExtended {
     zip: string;
     data: CurrentConditions;
     label: string;
+    icon: string;
 }

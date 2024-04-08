@@ -17,7 +17,6 @@ export class MainPageComponent {
 
   constructor() {
     this.locationService.locations.forEach((zipcode) => this.weatherService.addCurrentConditions(zipcode));
-    this.weatherService.getCurrentConditions()
   }
 
 

@@ -1,11 +1,12 @@
 import {Injectable, Signal, signal} from '@angular/core';
 import {Observable} from 'rxjs';
 
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {CurrentConditions} from '../types/current-conditions.type';
 import {Forecast} from '../pages/forecasts-list/forecast.type';
 import {environment} from '../../environments/environment';
 import {ConditionsExtended} from '../types/conditions-and-zip.type';
+import {API_CONST} from '../consts/api.const';
 
 @Injectable()
 export class WeatherService {
@@ -23,7 +24,7 @@ export class WeatherService {
     constructor(private http: HttpClient) {
     }
 
-    addCurrentConditions(zipcode: string): void {
+    addCurrentConditions(zipcode: string){
         // If current conditions for this zipcode are already being displayed, don't make another request
         if (this.currentConditions().some(condition => condition.zip === zipcode)) {
             return;
@@ -31,7 +32,23 @@ export class WeatherService {
         // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
         this.http.get<CurrentConditions>(
             this.getCurrentConditionUrl(zipcode), this.conditionCacheHeader )
-            .subscribe(data => this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data, label : data.name + ` (${zipcode})`}]));
+            .subscribe({
+                next: data => {
+                    // We add the current conditions to the list of current conditions
+                    this.currentConditions.update(conditions => {
+                        conditions.push({
+                            zip: zipcode,
+                            data,
+                            label: `${data.name}, ${data.sys.country}`,
+                            icon: this.getWeatherIcon(data.weather[0].id)
+                        });
+                        return conditions;
+                    });
+                },
+                error: error => {
+                    console.error('Error fetching current conditions', error);
+                }
+            });
     }
 
     removeCurrentConditions(zipcode: string) {
@@ -43,7 +60,7 @@ export class WeatherService {
     }
 
     getCurrentConditionUrl(zipcode: string): string {
-        return `${environment.API_URL}/weather?zip=${zipcode},us&units=imperial&APPID=${environment.APP_ID}`
+        return API_CONST.WEATHER.GET.replace('{zipcode}', zipcode);
     }
 
     getForecast(zipcode: string): Observable<Forecast> {
@@ -51,7 +68,7 @@ export class WeatherService {
         return this.http.get<Forecast>(this.getForecastUrl(zipcode),this.forecastCacheHeader);
     }
     getForecastUrl(zipcode: string): string {
-        return `${environment.API_URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${environment.APP_ID}`
+        return API_CONST.FORECAST.GET.replace('{zipcode}', zipcode);
     }
 
     getWeatherIcon(id: number): string {
